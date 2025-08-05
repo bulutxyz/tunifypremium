@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tunify Premium</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1e1e1e;
+      color: #fff;
+      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 0 16px;
+      font-size: 1.1em;
+      color: #fff;
+    }
+    .top-bar .left-arrow {
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    .top-bar .title {
+      flex: 1;
+      text-align: center;
+      font-size: 1em;
+      font-weight: 500;
+      color: #fff;
+    }
+    .top-bar .dots {
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    .cover-art {
+      width: 320px !important;
+      height: 320px !important;
+      border-radius: 24px;
+      margin: 32px auto 0 auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .cover-art img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+    .song-info {
+      display: flex;
+      align-items: center;
+      margin: 24px 0 0 0;
+      padding: 0 16px;
+    }
+    .song-info img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+    .song-details {
+      flex: 1;
+    }
+    .song-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .song-artist {
+      color: #b3b3b3;
+      font-size: 1em;
+    }
+    .player {
+      margin: 24px 0 0 0;
+      padding: 0 16px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .progress {
+      height: 6px;
+      background: #fff;
+      border-radius: 3px;
+      transition: width 0.2s;
+    }
+    .time {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95em;
+      color: #b3b3b3;
+      margin-bottom: 8px;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 8px;
+    }
+    .controls button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2em;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .controls .play {
+      font-size: 2.6em;
+      background: #fff;
+      color: #181818;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px #0006;
+    }
+    .lyrics-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #2e2e2e;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.1em;
+      padding: 14px 0 14px 0;
+      text-align: center;
+      border-radius: 18px 18px 0 0;
+      margin: 0;
+      z-index: 10;
+    }
+    @media (max-width: 500px) {
+      .cover-art { max-width: 100vw; height: 60vw; }
+      .song-info img { width: 40px; height: 40px; }
+      .player { padding: 0 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="bg-blur"></div>
+  <div class="content">
+    <div class="top-bar">
+      <span class="left-arrow">&#8592;</span>
+      <span class="title">Tunify Premium</span>
+      <span class="dots">&#8942;</span>
+    </div>
+    <div class="cover-art">
+      <img id="main-cover" src="1.jpg" alt="Kapak">
+    </div>
+    <div class="song-info">
+      <img id="mini-cover" src="1.jpg" alt="Kapak">
+      <div class="song-details">
+        <div class="song-title">Herkesim</div>
+        <div class="song-artist">Tuana♡Bulut</div>
+      </div>
+      <span style="font-size:1.3em;opacity:0.7;">&#43;</span>
+    </div>
+    <div class="player">
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="time">
+        <span id="current">0:00</span>
+        <span id="duration">-2:04</span>
+      </div>
+      <audio id="audio" src="1.mp3"></audio>
+      <div class="controls">
+        <button onclick="audio.currentTime=0"><span>&#9198;</span></button>
+        <button class="play" id="playpause"><span>&#9654;</span></button>
+        <button onclick="audio.currentTime=audio.duration"><span>&#9197;</span></button>
+      </div>
+    </div>
+    <div class="lyrics-bar">Şarkı sözleri</div>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Inter', Arial, sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+      #bg-blur {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100vw; height: 100vh;
+        background: url('1.jpg') center center/cover no-repeat;
+        filter: blur(32px) brightness(0.5);
+        z-index: 0;
+        transition: background-image 0.3s;
+      }
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+    </style>
+    <script>
+      // Şarkı listesi (dosya adlarına dikkat!)
+      const songs = [
+        { title: "Herkesim", img: "1.jpg", mp3: "1.mp3" },
+        { title: "Cenneti Müjdeleyen", img: "2.JPG", mp3: "2.mp3" }
+      ];
+      let currentSong = 0;
+      const cover = document.getElementById('main-cover');
+      const miniCover = document.getElementById('mini-cover');
+      const bgBlur = document.getElementById('bg-blur');
+      const audio = document.getElementById('audio');
+      const title = document.querySelector('.song-title');
+      const artist = document.querySelector('.song-artist');
+      const playpause = document.getElementById('playpause');
+      const progress = document.getElementById('progress');
+      const current = document.getElementById('current');
+      const duration = document.getElementById('duration');
+      let playing = false;
+      function formatTime(sec) {
+        sec = Math.floor(sec);
+        return Math.floor(sec/60)+":"+("0"+(sec%60)).slice(-2);
+      }
+      function updateSong() {
+        cover.src = songs[currentSong].img;
+        miniCover.src = songs[currentSong].img;
+        bgBlur.style.backgroundImage = `url('${songs[currentSong].img}')`;
+        audio.src = songs[currentSong].mp3;
+        title.textContent = songs[currentSong].title;
+        artist.textContent = currentSong === 0 ? "Tuana&Bulut" : "Tuana&Bulut";
+        audio.load();
+        playpause.innerHTML = '<span>&#9654;</span>';
+        progress.style.width = "0%";
+        current.textContent = "0:00";
+        duration.textContent = "-" + (audio.duration ? formatTime(audio.duration) : "0:00");
+      }
+      function prevSong() {
+        currentSong = (currentSong - 1 + songs.length) % songs.length;
+        updateSong();
+      }
+      function nextSong() {
+        currentSong = (currentSong + 1) % songs.length;
+        updateSong();
+        audio.play();
+      }
+      playpause.onclick = function() {
+        if (audio.paused) { audio.play(); } else { audio.pause(); }
+      };
+      audio.onplay = function() {
+        playpause.innerHTML = '<span>&#10073;&#10073;</span>';
+        playing = true;
+      };
+      audio.onpause = function() {
+        playpause.innerHTML = '<span>&#9654;</span>';
+        playing = false;
+      };
+      audio.ontimeupdate = function() {
+        progress.style.width = (audio.currentTime/audio.duration*100)+"%";
+        current.textContent = formatTime(audio.currentTime);
+        duration.textContent = "-"+formatTime(audio.duration-audio.currentTime);
+      };
+      audio.onloadedmetadata = function() {
+        duration.textContent = "-"+formatTime(audio.duration);
+      };
+      document.querySelectorAll('.controls button')[0].onclick = function() { prevSong(); };
+      document.querySelectorAll('.controls button')[2].onclick = function() { nextSong(); };
+      updateSong();
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.addEventListener('click', function(e) {
+        const rect = progressBar.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percent = x / rect.width;
+        audio.currentTime = percent * audio.duration;
+      });
+    </script>
+</body>
+</html>
